@@ -1,6 +1,8 @@
 const express = require('express');
 const es6Renderer = require('express-es6-template-engine');
 const data = require('./data')
+const logger = require('./middleware/logger')
+const bodyParser = require('body-parser');
 
 const PORT = 3000;
 
@@ -13,7 +15,12 @@ app.engine('html', es6Renderer);
   // set the 'views' setting to look for the 'views' folder
 app.set('views', 'views');
   // set the view engine to use the newly registered 'html' engine
-app.set('view engine', 'html');1
+app.set('view engine', 'html');
+
+app.use(logger);
+app.use(express.static('./public'));
+// app.use('/friends', passwordCheck);
+app.use(bodyParser.urlencoded({ extended: true }))
 
 /** Routes **/
 // Home page
@@ -63,6 +70,28 @@ app.get('/friend/:handle', (req, res) => {
   });
 })
 
+// GET /newfriend
+app.get('/newfriend', (req, res) => {
+  // show the new friend page
+  res.render('newFriend');
+})
+
+// POST /newfriend
+app.post('/newfriend', (req, res) => {
+  // confirm that the request body has all the info we need
+  if (!req.body.name || !req.body.handle || !req.body.description) {
+    // if it doesn't, send back an error message
+    res.status(400).send('Please fill in all required fields');
+  }
+  // add the new data to our data array
+  data.push({
+    name: req.body.name,
+    handle: '@' + req.body.handle,
+    description: req.body.description
+  })
+  // redirect to the main friends list
+  res.redirect('/friends');
+})
 
 // start the server
 app.listen(PORT, () => {
