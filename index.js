@@ -114,8 +114,7 @@ app.get('/editfriend/:handle', (req, res) => {
     return;
   }
 
-  console.log(friendData);
-
+  // render the `views/editFriend.html` file
   res.render('editFriend', {
     locals: {
       friend: friendData // this is the data we found using the handle
