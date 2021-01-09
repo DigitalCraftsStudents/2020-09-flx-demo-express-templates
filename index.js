@@ -93,6 +93,101 @@ app.post('/newfriend', (req, res) => {
   res.redirect('/friends');
 })
 
+app.get('/editfriend/:handle', (req, res) => {
+  // find the friend we are looking for in the data
+  const friendData = data.find((friend) => {
+    // if the current friend's "handle" is the same as the one in the url
+    if (friend.handle === req.params.handle) {
+      // return true (and store the current friend in the 'friendData' variable)
+      return true;
+    } else {
+      // otherwise, keep looking
+      return false;
+    }
+  })
+
+  // if we were unable to find the correct friend
+  if (!friendData) {
+    // send a 404 with a message
+    res.status(404).send(`Could not find friend ${req.params.handle}`);
+    // return, so we don't also try to render the template
+    return;
+  }
+
+  console.log(friendData);
+
+  res.render('editFriend', {
+    locals: {
+      friend: friendData // this is the data we found using the handle
+    }
+  });
+})
+
+app.post('/editfriend/:handle', (req, res) => {
+  // find the friend we are trying to edit
+  const friendIndex = data.findIndex((friend) => {
+    // if the current friend's "handle" is the same as the one in the url
+    if (friend.handle === req.params.handle) {
+      // return true (and store the current friend in the 'friendData' variable)
+      return true;
+    } else {
+      // otherwise, keep looking
+      return false;
+    }
+  })
+
+  // if we were unable to find the correct friend
+  if (!friendIndex) {
+    // send a 404 with a message
+    res.status(404).send(`Could not find friend ${req.params.handle}`);
+    // return, so we don't also try to render the template
+    return;
+  }
+
+  // make sure the request data has all info we need
+  if (!req.body.name || !req.body.handle || !req.body.description) {
+    // if it doesn't, send back an error message
+    res.status(400).send('Please fill in all required fields');
+  }
+
+  // update friend with new data
+  data[friendIndex].name = req.body.name;
+  data[friendIndex].handle = '@' + req.body.handle;
+  data[friendIndex].description = req.body.description;
+
+  // redirect to edited friend's profile
+  res.redirect(`/friend/${data[friendIndex].handle}`)
+})
+
+app.get('/deletefriend/:handle', (req, res) => {
+  // find index of the user we're looking for
+  // find the friend we are trying to edit
+  const friendIndex = data.findIndex((friend) => {
+    // if the current friend's "handle" is the same as the one in the url
+    if (friend.handle === req.params.handle) {
+      // return true (and store the current friend in the 'friendData' variable)
+      return true;
+    } else {
+      // otherwise, keep looking
+      return false;
+    }
+  })
+
+  // if we were unable to find the correct friend
+  if (!friendIndex) {
+    // send a 404 with a message
+    res.status(404).send(`Could not find friend ${req.params.handle}`);
+    // return, so we don't also try to render the template
+    return;
+  }
+
+  // remove them
+  data.splice(friendIndex, 1);
+
+  // redirect back to home page
+  res.redirect('/friends')
+})
+
 // start the server
 app.listen(PORT, () => {
   console.log(`Address Book App listening at http://localhost:${PORT}`);

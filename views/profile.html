@@ -11,6 +11,11 @@
   <h3>${friend.handle}</h3>
   <p>${friend.description}</p>
 
+  <p>
+    <a href="/editfriend/${friend.handle}">Edit</a> | <a id="deleteButton" href="/deletefriend/${friend.handle}">Delete</a>
+  </p>
+
   <a href="/friends">&larr; Back</a>
+  <script src="/profile.js"></script>
 </body>
 </html>

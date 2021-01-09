@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Address Book</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <h1>Editing friend!</h1>
+
+  <form method="POST"> <!-- Method is POST so it will accept form data -->
+    <p>
+      <label for="name">Friend Name</label>
+      <br>
+      <input type="text" name="name" required value="${friend.name}">
+    </p>
+    <p>
+      <label for="handle">Handle</label>
+      <br>
+      @<input type="text" name="handle" required value="${friend.handle.slice(1)}">
+    </p>
+    <p>
+      <label for="description">Description</label>
+      <br>
+      <textarea name="description" required cols="30" rows="10">${friend.description}</textarea>
+    </p>
+    <button type="submit">Save Friend</button>
+  </form>
+
+</body>
+</html>
